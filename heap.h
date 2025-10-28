@@ -23,15 +23,18 @@ struct MinHeap {
         // TODO: insert index at end of heap, restore order using upheap()
 
         //insert template made
-        if (size == 64) {
+        if (size >= 64) {
             cout << "Heap is full" << endl;
             return;
         }
-        if (size == 0) {
-            data[size] = idx;
-            size++;
-            return;
-        }
+
+        data[size-1] = idx;
+        upheap(size-1, weightArr);
+        size++;
+
+
+
+
         int currIdx = size-1;
         int temp = data[currIdx];
         int lChild = 2*currIdx + 1;
@@ -49,6 +52,7 @@ struct MinHeap {
                 return;
             }
         }
+        if (parent)
 
 
 
@@ -67,10 +71,23 @@ struct MinHeap {
         return -1; // placeholder
     }
 
-    void upheap(int pos, int weightArr[]) {
+    void upheap(int pos, int weightArr[]) { //only one call
         // TODO: swap child upward while smaller than parent
-        int len2 = sizeof(data) / sizeof(data[0]);
-        int c = len2-1;
+
+        int i = pos;
+        int parentI;
+
+        while (i != 0) {
+            parentI = floor((i-1)/2); //flooring in case, must update in loop
+
+            if (weightArr[data[i]] < weightArr[data[parentI]]) {
+                swap(data[i], data[parentI]);
+                i = parentI; //as looping variant
+            } else {
+                return;
+            }
+        }
+
 
         //data[pos]
 
@@ -79,6 +96,28 @@ struct MinHeap {
 
     void downheap(int pos, int weightArr[]) {
         // TODO: swap parent downward while larger than any child
+        int z = pos;
+        int leftChildI = 2*z +1;
+        int rightChildI = 2*z +2;
+        int minI;
+
+        while (leftChildI < size) {
+            leftChildI = 2*z + 1;
+            rightChildI = 2*z + 2;
+
+            minI = leftChildI; //assume leftChild is minIndex to make easier on checks
+
+            //rightChildI < size to check for existence
+            if (rightChildI < size && weightArr[data[leftChildI]] > weightArr[data[rightChildI]]) {
+                minI = rightChildI;
+            }
+
+            if (weightArr[data[z]] > weightArr[data[minI]]) {
+                swap(data[z], data[minI]);
+                z = minI; //looping variant
+            } else {
+                return;
+            }
     }
 };
 
