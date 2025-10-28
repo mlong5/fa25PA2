@@ -31,43 +31,19 @@ struct MinHeap {
         data[size-1] = idx;
         upheap(size-1, weightArr);
         size++;
-
-
-
-
-        int currIdx = size-1;
-        int temp = data[currIdx];
-        int lChild = 2*currIdx + 1;
-        int rChild = 2*currIdx + 2;
-        int parent = floor((size - 1)/2);
-        if (parent == 1) { //case where only one node exists
-            if (!data[lChild]) {
-                data[currIdx] = data[lChild];
-                size++;
-                return;
-            }
-            if (!data[rChild]) {
-                data[currIdx] = data[rChild];
-                size++;
-                return;
-            }
-        }
-        if (parent)
-
-
-
-
-
-        //upheap(idx, weightArr);
-
-
-
-
     }
 
     int pop(int weightArr[]) {
         // TODO: remove and return smallest index
         // Replace root with last element, then call downheap()
+        int temp;
+        if (size != 0) {
+            temp = data[0];
+            data[0] = data[size-1]; //replacement is overwrites the smallest value
+            size--; //size moving back makes it true deletion
+            downheap(0, weightArr);
+            return temp;
+        }
         return -1; // placeholder
     }
 
@@ -87,9 +63,6 @@ struct MinHeap {
                 return;
             }
         }
-
-
-        //data[pos]
 
 
     }
