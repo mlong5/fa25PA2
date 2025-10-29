@@ -39,12 +39,12 @@ struct MinHeap {
         int temp;
         if (size != 0) {
             temp = data[0];
-            data[0] = data[size-1]; //replacement is overwrites the smallest value
+            data[0] = data[size-1]; //replacement of data[0] overwrites the smallest value
             size--; //size moving back makes it true deletion
-            downheap(0, weightArr);
+            downheap(0, weightArr); //fixes min heap
             return temp;
         }
-        return -1; // placeholder
+        return -1; // placeholder but will now also be for if empty
     }
 
     void upheap(int pos, int weightArr[]) { //only one call
@@ -53,7 +53,7 @@ struct MinHeap {
         int i = pos;
         int parentI;
 
-        while (i != 0) {
+        while (i > 0) {
             parentI = floor((i-1)/2); //flooring in case, must update in loop
 
             if (weightArr[data[i]] < weightArr[data[parentI]]) {

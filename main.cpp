@@ -75,15 +75,15 @@ void buildFrequencyTable(int freq[], const string& filename) {
 int createLeafNodes(int freq[]) {
     int nextFree = 0;
     for (int i = 0; i < 26; ++i) {
-        if (freq[i] > 0) {
+        if (freq[i] > 0) { //if letter has a frequency
             charArr[nextFree] = 'a' + i;
             weightArr[nextFree] = freq[i];
-            leftArr[nextFree] = -1;
-            rightArr[nextFree] = -1;
+            leftArr[nextFree] = -1; //make sure left node cannot be called as does not exist
+            rightArr[nextFree] = -1; //makes sure right node cannot be called as does not exist
             nextFree++;
         }
     }
-    cout << "Created " << nextFree << " leaf nodes.\n";
+    cout << "Created " << nextFree << " leaf nodes.\n"; //certain number of leaf nodes
     return nextFree;
 }
 
@@ -98,6 +98,36 @@ int buildEncodingTree(int nextFree) {
     //    - Set left/right pointers
     //    - Push new parent index back into the heap
     // 4. Return the index of the last remaining node (root)
+    MinHeap<int> heap = new MinHeap<int>();
+    //assume frequency table built
+    //leaf nodes are made for each frequency characters
+    int c = 0;
+    while (c < nextFree) {
+        heap.push(c,weightArr);
+        c++;
+    }
+    int leaf1;
+    int leaf2;
+    int parent;
+    int * left = nullptr;
+    int * right = nullptr;
+    while (heap.size > 1) {
+        leaf1 = heap.pop(weightArr[heap.size-1]); //size decreases after a pop
+        leaf2 = heap.pop(weightArr[heap.size-1]);
+
+        parent = leaf1 + leaf2;
+        left = &((leaf1 + leaf1) + 1);
+        right = &((leaf2 + leaf2) + 2);
+
+        heap.push(parent,weightArr);
+    }
+    return weightArr[0];
+
+
+
+
+
+
     return -1; // placeholder
 }
 
