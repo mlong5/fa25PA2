@@ -29,10 +29,10 @@ int main() {
     buildFrequencyTable(freq, "input.txt");
 
     // Step 2: Create leaf nodes for each character with nonzero frequency
-    int nextFree = createLeafNodes(freq);
+    int nextFree = createLeafNodes(freq); //unique characters as leaf nodes
 
     // Step 3: Build encoding tree using your heap
-    int root = buildEncodingTree(nextFree);
+    int root = buildEncodingTree(nextFree); //only returns root of all the leaves added up
 
     // Step 4: Generate binary codes using an STL stack
     string codes[26];
@@ -76,10 +76,10 @@ int createLeafNodes(int freq[]) {
     int nextFree = 0;
     for (int i = 0; i < 26; ++i) {
         if (freq[i] > 0) { //if letter has a frequency
-            charArr[nextFree] = 'a' + i;
+            charArr[nextFree] = 'a' + i; //each character
             weightArr[nextFree] = freq[i];
-            leftArr[nextFree] = -1; //make sure left node cannot be called as does not exist
-            rightArr[nextFree] = -1; //makes sure right node cannot be called as does not exist
+            leftArr[nextFree] = -1; //make sure left children non-existent
+            rightArr[nextFree] = -1; //makes sure right children non-existent
             nextFree++;
         }
     }
@@ -98,37 +98,42 @@ int buildEncodingTree(int nextFree) {
     //    - Set left/right pointers
     //    - Push new parent index back into the heap
     // 4. Return the index of the last remaining node (root)
-    MinHeap<int> heap = new MinHeap<int>();
+    MinHeap heap;
     //assume frequency table built
     //leaf nodes are made for each frequency characters
     int c = 0;
-    while (c < nextFree) {
+    while (c < nextFree) { //assumes it follows methods where nextFree is at least 1
         heap.push(c,weightArr);
         c++;
     }
+
     int leaf1;
     int leaf2;
-    int parent;
-    int * left = nullptr;
-    int * right = nullptr;
+    int parVal;
+    int parIdx;
+
     while (heap.size > 1) {
-        leaf1 = heap.pop(weightArr[heap.size-1]); //size decreases after a pop
-        leaf2 = heap.pop(weightArr[heap.size-1]);
+        //we are looping to make it so that we get to a final combined root
+        //(so > 1 to keep loop going)
+        leaf1 = heap.pop(weightArr); //size decreases after a pop, looping variant
+        leaf2 = heap.pop(weightArr);
 
-        parent = leaf1 + leaf2;
-        left = &((leaf1 + leaf1) + 1);
-        right = &((leaf2 + leaf2) + 2);
+        //we set parIdx each loop. nextFree was our starting index as after all unique leaves
+        parIdx = nextFree;
 
-        heap.push(parent,weightArr);
+        parVal = weightArr[leaf1] + weightArr[leaf2];
+        weightArr[parIdx] = parVal; //need to make sure weightArr is changed at the index
+        //need to change FIRST and then push LATER onto heap
+
+        leftArr[parIdx] = leaf1;
+        rightArr[parIdx] = leaf2;
+
+        heap.push(parIdx,weightArr);
+
+        //incremented in order to have a space for assignments of weightArr
+        nextFree++;
     }
-    return weightArr[0];
-
-
-
-
-
-
-    return -1; // placeholder
+    return heap.pop(weightArr);
 }
 
 // Step 4: Use an STL stack to generate codes
