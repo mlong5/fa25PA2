@@ -100,7 +100,7 @@ int buildEncodingTree(int nextFree) {
     // 4. Return the index of the last remaining node (root)
     MinHeap heap;
     //assume frequency table built
-    //leaf nodes are made for each frequency characters
+    //leaf nodes are made for each frequency of characters
     int c = 0;
     while (c < nextFree) { //assumes it follows methods where nextFree is at least 1
         heap.push(c,weightArr);
@@ -148,13 +148,41 @@ void generateCodes(int root, string codes[]) {
 
     int i = root;
     stack<pair<int,string>> stak;
+    string code = "";
 
     //pair = {}
     stak.push({i,""});
     //keep pushing just the root and Depth first searching in a tree to make it smaller
-    while (leftArr[i] > 0 && rightArr[i] > 0) {
-        stak.pop();
+    while (!stak.empty()) {
+        int top = stak.top().first; //set as index to use
+        string codeStr = stak.top().second; //set as str
+        //reGET every time the codeStr changes with new child
 
+        stak.pop(); //looping variant to pop minimum
+
+        //push children if they exist
+        //this is my coolest comment by far^
+
+
+        if (charArr[top] >= 'a' && charArr[top] <= 'z') { //if char exists, assumes lowercase
+            if (leftArr[top] == -1 && rightArr[top] == -1) {
+                //gets the int at top and indicates leaf node if BOTH -1 as no child
+                int charIdx = charArr[top] - 'a';
+                //using int notation for chars,
+                codes[charIdx] = codeStr;
+            }
+            //if only one left child exists then it is an extra minimum that can be combined
+            //with ANY other right child and still lead to correct minimum additions
+            //as well as correct order for STABLE sort
+
+        } else {
+            if (leftArr[top] > -1) {
+                stak.push({leftArr[top],codeStr + "0"});
+            }
+            if (rightArr[top] > -1) {
+                stak.push({rightArr[top],codeStr + "1"});
+            }
+        }
     }
 
 }
