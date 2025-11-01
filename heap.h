@@ -28,8 +28,8 @@ struct MinHeap {
             return;
         }
 
-        data[size-1] = idx;
-        upheap(size-1, weightArr);
+        data[size] = idx;
+        upheap(size, weightArr);
         size++;
     }
 
@@ -54,7 +54,7 @@ struct MinHeap {
         int parentI;
 
         while (i > 0) {
-            parentI = floor((i-1)/2); //flooring in case, must update in loop
+            parentI = (int)floor((i-1)/2); //flooring in case, must update in loop
 
             if (weightArr[data[i]] < weightArr[data[parentI]]) {
                 swap(data[i], data[parentI]);
@@ -70,13 +70,14 @@ struct MinHeap {
     void downheap(int pos, int weightArr[]) {
         // TODO: swap parent downward while larger than any child
         int z = pos;
-        int leftChildI = 2*z +1;
-        int rightChildI = 2*z +2;
+        int leftChildI;
+        int rightChildI;
         int minI;
 
-        while (leftChildI < size) {
+        while (2*z + 1 < size) { //need to make sure z is checked not the outside variable of leftChildI
             leftChildI = 2*z + 1;
             rightChildI = 2*z + 2;
+
 
             minI = leftChildI; //assume leftChild is minIndex to make easier on checks
 
@@ -91,7 +92,7 @@ struct MinHeap {
             } else {
                 return;
             }
+        }
     }
-};
-
+    };
 #endif

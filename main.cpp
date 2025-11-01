@@ -89,7 +89,7 @@ int createLeafNodes(int freq[]) {
 
 // Step 3: Build the encoding tree using heap operations
 int buildEncodingTree(int nextFree) {
-    // TODO:
+
     // 1. Create a MinHeap object.
     // 2. Push all leaf node indices into the heap.
     // 3. While the heap size is greater than 1:
@@ -101,6 +101,13 @@ int buildEncodingTree(int nextFree) {
     MinHeap heap;
     //assume frequency table built
     //leaf nodes are made for each frequency of characters
+    if (nextFree == 0) {
+        return -1;
+    }
+    if (nextFree == 1) {
+        return 0;
+    }
+
     int c = 0;
     while (c < nextFree) { //assumes it follows methods where nextFree is at least 1
         heap.push(c,weightArr);
@@ -125,8 +132,17 @@ int buildEncodingTree(int nextFree) {
         weightArr[parIdx] = parVal; //need to make sure weightArr is changed at the index
         //need to change FIRST and then push LATER onto heap
 
+        /*if (weightArr[leaf1] <= weightArr[leaf2]) {
+            leftArr[parIdx] = leaf1; // Smaller goes Left (0)
+            rightArr[parIdx] = leaf2; // Larger goes Right (1)
+        } else {
+            leftArr[parIdx] = leaf2; // Smaller goes Left (0)
+            rightArr[parIdx] = leaf1; // Larger goes Right (1)
+        }*/
         leftArr[parIdx] = leaf1;
         rightArr[parIdx] = leaf2;
+
+        charArr[parIdx] = '\0';
 
         heap.push(parIdx,weightArr);
 
@@ -138,13 +154,14 @@ int buildEncodingTree(int nextFree) {
 
 // Step 4: Use an STL stack to generate codes
 void generateCodes(int root, string codes[]) {
-    // TODO:
+
     // Use stack<pair<int, string>> to simulate DFS traversal.
     // Left edge adds '0', right edge adds '1'.
     // Record code when a leaf node is reached.
     if (root == -1) {
         return;
     }
+
 
     int i = root;
     stack<pair<int,string>> stak;
@@ -160,28 +177,32 @@ void generateCodes(int root, string codes[]) {
 
         stak.pop(); //looping variant to pop minimum
 
-        //push children if they exist
-        //this is my coolest comment by far^
 
 
-        if (charArr[top] >= 'a' && charArr[top] <= 'z') { //if char exists, assumes lowercase
             if (leftArr[top] == -1 && rightArr[top] == -1) {
                 //gets the int at top and indicates leaf node if BOTH -1 as no child
-                int charIdx = charArr[top] - 'a';
-                //using int notation for chars,
-                codes[charIdx] = codeStr;
+
+                //if char exists, assume lowercase
+                if (charArr[top] >= 'a' && charArr[top] <= 'z')
+                    if (codeStr.empty()) {
+                        codes[charArr[top] - 'a'] = "0";
+                    } else {
+                        codes[charArr[top] - 'a'] = codeStr;
+                    }
             }
             //if only one left child exists then it is an extra minimum that can be combined
             //with ANY other right child and still lead to correct minimum additions
             //as well as correct order for STABLE sort
+            else {
+            //push children if they exist
+            //this is my coolest comment by far^
+             if (rightArr[top] > -1) { //start with right first as going through a stack opposite for children
+                 stak.push({rightArr[top],codeStr + "1"});
+             }
+             if (leftArr[top] > -1) {
+                 stak.push({leftArr[top],codeStr + "0"});
+             }
 
-        } else {
-            if (leftArr[top] > -1) {
-                stak.push({leftArr[top],codeStr + "0"});
-            }
-            if (rightArr[top] > -1) {
-                stak.push({rightArr[top],codeStr + "1"});
-            }
         }
     }
 
