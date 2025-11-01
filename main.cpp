@@ -78,7 +78,7 @@ int createLeafNodes(int freq[]) {
         if (freq[i] > 0) { //if letter has a frequency
             charArr[nextFree] = 'a' + i; //each character
             weightArr[nextFree] = freq[i];
-            leftArr[nextFree] = -1; //make sure left children non-existent
+            leftArr[nextFree] = -1; //make sure left children non-existent, leaf has this characteristic
             rightArr[nextFree] = -1; //makes sure right children non-existent
             nextFree++;
         }
@@ -142,6 +142,21 @@ void generateCodes(int root, string codes[]) {
     // Use stack<pair<int, string>> to simulate DFS traversal.
     // Left edge adds '0', right edge adds '1'.
     // Record code when a leaf node is reached.
+    if (root == -1) {
+        return;
+    }
+
+    int i = root;
+    stack<pair<int,string>> stak;
+
+    //pair = {}
+    stak.push({i,""});
+    //keep pushing just the root and Depth first searching in a tree to make it smaller
+    while (leftArr[i] > 0 && rightArr[i] > 0) {
+        stak.pop();
+
+    }
+
 }
 
 // Step 5: Print table and encoded message
